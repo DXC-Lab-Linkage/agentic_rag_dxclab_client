@@ -1,0 +1,18 @@
+/**
+ * src/styles/settings.scss
+ *
+ * Configures SASS variables and Vuetify overwrites
+ */
+
+// https://vuetifyjs.com/features/sass-variables/`
+// @use 'vuetify/settings' with (
+//   $color-pack: false
+// );
+
+.v-toolbar__content {
+  height: 60px !important;
+}
+
+.main {
+  padding-top: 10px;
+}
