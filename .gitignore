@@ -40,4 +40,6 @@ vite.config.ts.timestamp*
 #tsconfig
 tsconfig.tsbuildinfo*
 
+# Other
 ./src/tmp
+package-lock.json
