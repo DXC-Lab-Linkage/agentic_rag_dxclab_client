@@ -51,14 +51,12 @@ export const useConfigStore = defineStore('config', {
     async getConfig() {
       try {
         /* Get parameters */
-        const postData = {}
         const res_param = await axios({
           url: '/api/get_param',
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
-          },
-          data: postData
+          }
         })
         this.FRONT_MSG_LANG = res_param.data.FRONT_MSG_LANG
         const csrfTokenStore = useCsrfTokenStore()

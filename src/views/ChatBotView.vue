@@ -369,8 +369,7 @@ const sendInit = async () => {
       headers: {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': csrfTokenStore.csrf_token
-      },
-      data: chat_data
+      }
     })
     chat_data.chat_start_date = res.data.chat_start_date
     //Clear the log displayed in the first chat panel.
