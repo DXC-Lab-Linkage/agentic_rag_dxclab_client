@@ -28,12 +28,16 @@ const messages: Record<Lang, Record<string, string>> = {
   ja: {
     AMSG_INIT: '質問または依頼を入力してください。',
     AMSG_ERR: 'エラーが発生しました。もう一度調査内容を入力してください。',
-    EX_INP_MSG: '例) ～について調べてください。'
+    EX_INP_MSG: '例) ～について調べてください。',
+    COPY_TEXT: 'クリップボードにコピーしました。',
+    COPY_TEXT_ERR: 'クリップボードへのコピーに失敗しました。'
   },
   en: {
     AMSG_INIT: 'Please input a question or request.',
     AMSG_ERR: 'An unexpected error has occurred. Please enter the question again.',
-    EX_INP_MSG: 'e.g.) Please research ~.'
+    EX_INP_MSG: 'e.g.) Please research ~.',
+    COPY_TEXT: 'Copied to clipboard.',
+    COPY_TEXT_ERR: 'Failed to copy to clipboard.'
   }
 }
 

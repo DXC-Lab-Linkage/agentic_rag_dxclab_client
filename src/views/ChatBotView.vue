@@ -36,22 +36,40 @@
                           <div v-if="message.sender === 'Assistant'" class="assistant-chat-name">
                             AI Agent
                           </div>
-                          <v-card class="mx-3 answer-area">
-                            <div v-if="message.type === 'user'" class="answer-text">
+                          <v-card
+                            class="mx-3 answer-area"
+                            :class="{ 'agent-area': message.sender === 'Assistant' }"
+                            style="position: relative"
+                          >
+                            <!-- User message -->
+                            <div v-if="message.sender === 'User'" class="answer-text">
                               {{ message.text }}
                             </div>
-                            <div v-if="message.type === 'agent'" class="answer-text">
-                              <div
-                                v-if="md_area_fix === false"
-                                v-html="parseMarkdown(message.text)"
-                                class="md-area"
-                              ></div>
-                              <div
-                                v-else
-                                v-html="parseMarkdown(message.text)"
-                                class="md-area_fix"
-                              ></div>
-                            </div>
+                            <!-- Agent(Assistant) message + Copy button -->
+                            <template v-if="message.sender === 'Assistant'">
+                              <div style="display: flex; justify-content: flex-end">
+                                <button
+                                  v-if="index !== 0"
+                                  class="copy-button"
+                                  @click="copyText(message.text)"
+                                  title="Copy"
+                                >
+                                  <span class="mdi mdi-content-copy"></span>
+                                </button>
+                              </div>
+                              <div class="answer-text agent-text">
+                                <div
+                                  v-if="!md_area_fix"
+                                  v-html="parseMarkdown(message.text)"
+                                  class="md-area"
+                                ></div>
+                                <div
+                                  v-else
+                                  v-html="parseMarkdown(message.text)"
+                                  class="md-area_fix"
+                                ></div>
+                              </div>
+                            </template>
                           </v-card>
                         </div>
                       </div>
@@ -156,6 +174,8 @@ let AMSG_INIT = ''
 let AMSG_ERR = ''
 let EX_INP_MSG = ''
 let FRONT_MSG_LANG = ''
+let COPY_TEXT = ''
+let COPY_TEXT_ERR = ''
 const userInput = ref<string>('')
 const md_area_fix = ref<boolean>(false)
 //Error message display flag
@@ -319,6 +339,8 @@ onMounted(async () => {
     AMSG_INIT = getMessage('AMSG_INIT', FRONT_MSG_LANG)
     AMSG_ERR = getMessage('AMSG_ERR', FRONT_MSG_LANG)
     EX_INP_MSG = getMessage('EX_INP_MSG', FRONT_MSG_LANG)
+    COPY_TEXT = getMessage('COPY_TEXT', FRONT_MSG_LANG)
+    COPY_TEXT_ERR = getMessage('COPY_TEXT_ERR', FRONT_MSG_LANG)
     messages.value = [
       {
         sender: 'Assistant',
@@ -700,6 +722,24 @@ const copyCode = async (button: HTMLButtonElement) => {
     console.error('Copy failed:', err)
   }
 }
+
+/**
+ * Copies the provided text to the clipboard and shows an alert message
+ * to notify the user of success or failure.
+ *
+ * @param text - The string to be copied to the clipboard.
+ * @returns void
+ */
+const copyText = (text: string): void => {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      alert(COPY_TEXT)
+    })
+    .catch(() => {
+      alert(COPY_TEXT_ERR)
+    })
+}
 </script>
 
 <style scoped>
@@ -859,7 +899,7 @@ html {
   padding-bottom: 0;
   margin-top: 0px;
   margin-bottom: 0px;
-  padding-right: 0.5rem;
+  padding-right: 1rem;
 }
 
 @keyframes textFadeIn {
@@ -1056,5 +1096,12 @@ html {
 
 :deep(tr:hover) {
   background-color: rgba(44, 140, 118, 0.2);
+}
+
+.copy-button {
+  position: absolute;
+  display: flex;
+  justify-content: flex-end;
+  z-index: 10;
 }
 </style>
