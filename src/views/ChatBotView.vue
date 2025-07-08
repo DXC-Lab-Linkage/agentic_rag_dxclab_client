@@ -541,6 +541,9 @@ const sendMsgToAgent = async () => {
                   first_flg = false
                 }
               } else {
+                if (answer.startsWith('"') && answer.endsWith('"')) {
+                  answer = answer.slice(1, -1)
+                }
                 messages.value[messages.value.length - 1].text = answer
               }
               //Scroll to the bottom
@@ -562,6 +565,14 @@ const sendMsgToAgent = async () => {
             userInput.value = ''
             disable_user_input.value = false
             disable_btn.value = false
+          } else if (message.type === 'final_msg') {
+            if (answer.startsWith('"') && answer.endsWith('"')) {
+              answer = answer.slice(1, -1)
+            }
+            messages.value[messages.value.length - 1].text = answer
+            nextTick(() => {
+              LogscrollToBottom()
+            })
           }
         } catch (error: unknown) {
           handleError(error as AxiosError, router)
