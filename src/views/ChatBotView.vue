@@ -76,7 +76,7 @@
                     </v-col>
                     <v-col cols="4" md="4" lg="4" xl="4" class="hidden-sm-and-down">
                       <div>
-                        <LogPanel :logs="logs" :front_msg_lang="FRONT_MSG_LANG" />
+                        <LogPanelView :logs="logs" :front_msg_lang="FRONT_MSG_LANG" />
                       </div>
                     </v-col>
                   </v-row>
@@ -142,7 +142,7 @@ import { getMessage } from '../utils/messages'
 import router from '../router'
 import axios from 'axios'
 import { nextTick } from 'vue'
-import LogPanel from './LogPanel.vue'
+import LogPanelView from './LogPanelView.vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { Router } from 'vue-router'
@@ -231,9 +231,9 @@ const checkTextLength = (): void => {
  *
  */
 const LogscrollToBottom = () => {
-  const logPanel = document.querySelector('.log_panel')
-  if (logPanel) {
-    logPanel.scrollTop = logPanel.scrollHeight
+  const LogPanelView = document.querySelector('.log_panel')
+  if (LogPanelView) {
+    LogPanelView.scrollTop = LogPanelView.scrollHeight
   }
 }
 
