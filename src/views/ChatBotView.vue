@@ -111,21 +111,6 @@
                           :disabled="disable_btn"
                           size="x-small"
                         />
-                        <v-icon
-                          class="upload-icon"
-                          style="cursor: pointer; font-size: 24px; margin-left: 8px"
-                          @click="onUploadClick"
-                          title="Upload file"
-                        >
-                          mdi-file-upload-outline
-                        </v-icon>
-                        <input
-                          ref="fileInput"
-                          type="file"
-                          accept=".txt,.md,.pdf"
-                          style="display: none"
-                          @change="onFileSelected"
-                        />
                       </div>
                     </v-col>
                     <v-col cols="4" md="4" lg="4" xl="4" class="hidden-sm-and-down"></v-col>
@@ -177,8 +162,6 @@ const csrfTokenStore = useCsrfTokenStore()
 const show_screen = ref(false)
 const disable_btn = ref(false)
 const disable_user_input = ref(false)
-const fileInput = ref<HTMLInputElement | null>(null)
-const selectedFile = ref<File | null>(null)
 
 /**
  * Show User guide
@@ -481,17 +464,15 @@ const sendMsgToAgent = async () => {
     await nextTick()
     scrollToBottom()
     chat_data.user_request = userInput.value.trim()
-    const formData = new FormData()
-    formData.append('chat_data', JSON.stringify(chat_data))
-    if (selectedFile.value) {
-      formData.append('file', selectedFile.value)
-    }
+    //Clear the log displayed on the panel
+    logs.value = []
     const response = await fetch('/api/ask_agent', {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         'X-CSRF-TOKEN': csrfTokenStore.csrf_token
       },
-      body: formData
+      body: JSON.stringify(chat_data)
     })
     if (!response.ok) {
       //For HTTP errors, throw the error manually
@@ -769,27 +750,6 @@ const copyText = (text: string): void => {
     .catch(() => {
       alert(COPY_TEXT_ERR)
     })
-}
-
-/**
- * Triggers the hidden file input dialog when the upload icon is clicked.
- * This function should be bound to the click event of the upload icon.
- */
-function onUploadClick() {
-  fileInput.value?.click()
-}
-
-/**
- * Handles the file selection event from the file input element.
- * If a file is selected, it logs the file object and can trigger the upload process.
- *
- * @param {Event} event - The change event triggered when the user selects a file.
- */
-async function onFileSelected(event: Event) {
-  const target = event.target as HTMLInputElement
-  if (target.files && target.files.length > 0) {
-    selectedFile.value = target.files[0]
-  }
 }
 </script>
 
@@ -1154,9 +1114,5 @@ html {
   display: flex;
   justify-content: flex-end;
   z-index: 10;
-}
-
-.upload-icon:hover {
-  color: #1976d2;
 }
 </style>
