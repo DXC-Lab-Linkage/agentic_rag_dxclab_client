@@ -147,6 +147,8 @@ import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { Router } from 'vue-router'
 import { AxiosError } from 'axios'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/vs2015.css'
 
 const scrollToBottom = () => {
   const chatWindow = document.querySelector('.chat-window')
@@ -646,26 +648,34 @@ const initChatData = async () => {
     chat_start_date: ''
   }
 }
-/** --- Show AI messages in Markdown format --- */
 
-//Create and override the Renderer for marked
+/** --- Show AI messages in Markdown format --- */
 const renderer = new marked.Renderer()
 
 /**
- * Renders a code block wrapped in a container with a “Copy” button.
+ * Custom renderer for code blocks in marked.
+ * - Applies syntax highlighting using highlight.js.
+ * - Adds a "Copy" button for easy clipboard copying.
+ * - Safe for CSP: does not use inline styles (requires highlight.js CSS theme).
  *
- * @param {Object} options
- * @param {string} options.text – The source code to display.
- * @param {string} [options.lang] – Optional language identifier for syntax highlighting (e.g., "js", "ts").
- * @returns {string} HTML string for the code block including a copy-to-clipboard button.
+ * @param {Object} options - Options for rendering the code block.
+ * @param {string} options.text - The code content to display.
+ * @param {string} [options.lang] - Optional language identifier for syntax highlighting.
+ * @returns {string} HTML string for the code block with syntax highlighting and a copy-to-clipboard button.
+ *
  */
 renderer.code = ({ text, lang }) => {
-  const languageClass = lang ? ` language-${lang}` : ''
+  const validLang = lang && hljs.getLanguage(lang)
+  const highlighted = validLang
+    ? hljs.highlight(text, { language: lang }).value
+    : hljs.highlightAuto(text).value
+
+  const languageClass = lang ? `language-${lang}` : ''
   const buttonHTML = `<button class="copy-code-button" data-copy-code="true">Copy</button>`
   return `
     <div class="code-container">
       ${buttonHTML}
-      <pre><code class="${languageClass}">${text}</code></pre>
+      <pre><code class="hljs ${languageClass}">${highlighted}</code></pre>
     </div>
   `
 }
@@ -1022,6 +1032,10 @@ html {
   position: relative;
   margin-top: -3rem;
   margin-bottom: -2rem;
+}
+
+:deep(.hljs) {
+  background: #000 !important;
 }
 
 :deep(.copy-code-button) {
