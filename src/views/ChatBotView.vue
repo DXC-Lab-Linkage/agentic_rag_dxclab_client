@@ -529,7 +529,7 @@ const sendMsgToAgent = async () => {
             if (msg_content_nl !== answer_before) {
               //Not the last message, so join chunk to answer
               answer += message.content
-                .replace(/\\n\\n/g, '\n')
+                .replace(/\\n\\n/g, '\n\n')
                 .replace(/\\n/g, '\n')
                 .replace(/"/g, '"')
                 .replace(/\\"/g, '"')
