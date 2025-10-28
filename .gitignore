@@ -43,3 +43,6 @@ tsconfig.tsbuildinfo*
 # Other
 ./src/tmp
 package-lock.json
+
+# cline
+.clinerules
